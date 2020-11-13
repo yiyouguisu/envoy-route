@@ -1,0 +1,40 @@
+version: '3'
+services:
+
+  front-envoy:
+    build:
+      context: ./
+      dockerfile: Dockerfile-frontenvoy
+    image: yiyouguisu/envoy_route-mirror:latest
+    networks:
+      - envoy_route-mirror_network
+    expose:
+      - "80"
+      - "8001"
+    ports:
+      - "80:80"
+      - "8001:8001"
+
+  service1: 
+    build:
+      context: ./
+      dockerfile: Dockerfile-service
+    networks:
+      envoy_route-mirror_network:
+    environment:
+      - SERVICE_NAME=1
+    expose:
+      - "80"
+
+  service2: 
+    build:
+      context: ./
+      dockerfile: Dockerfile-service
+    networks:
+      envoy_route-mirror_network:
+    environment:
+      - SERVICE_NAME=2
+    expose:
+      - "80"
+networks:
+  envoy_route-mirror_network: {}
