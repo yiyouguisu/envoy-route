@@ -1,11 +1,5 @@
-FROM frolvlad/alpine-glibc
-
-RUN apk upgrade && apk add curl
-
-ADD ./envoy /
-RUN chmod u+x /envoy
+FROM envoyproxy/envoy-alpine:v1.12.0
 
 ADD ./front-envoy.yaml /etc/
 
-
-CMD /envoy --v2-config-only -l info -c /etc/front-envoy.yaml --service-node front-node --service-cluster front-cluster
+CMD envoy -l info -c /etc/front-envoy.yaml --service-node front-node --service-cluster front-cluster --drain-time-s 2 --parent-shutdown-time-s 3 
